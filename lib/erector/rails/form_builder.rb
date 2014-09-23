@@ -37,14 +37,6 @@ module Erector
           super
         end
       end
-
-      def self.method_missing(method_name, *args, &block)
-        if parent_builder_class.respond_to?(method_name)
-          parent_builder_class.send(method_name, *args, &block)
-        else
-          super
-        end
-      end
     end
   end
 end
