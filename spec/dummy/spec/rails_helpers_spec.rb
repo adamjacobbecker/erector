@@ -275,16 +275,6 @@ describe Erector::Rails do
   end
 
   describe 'Simple Form' do
-    class SimpleFormObject < OpenStruct
-      def self.model_name
-        OpenStruct.new(param_key:'simple_form_object')
-      end
-
-      def to_key
-        ['1']
-      end
-    end
-
     describe "#simple_form_for" do
       it "instantiates a SimpleForm builder" do
         test_render do
@@ -299,7 +289,19 @@ describe Erector::Rails do
 
     # We're testing GM, so only test on newest Rails...
     if Gem::Version.new(::Rails.version) >= Gem::Version.new('4.1.0')
+      require 'ostruct'
+
       describe "#simple_fields_for" do
+        class SimpleFormObject < OpenStruct
+          def self.model_name
+            OpenStruct.new(param_key:'simple_form_object')
+          end
+
+          def to_key
+            ['1']
+          end
+        end
+
         it "functions properly" do
           rendered = test_render do
             simple_form_for(:foo, :url => "/test") do |form|
