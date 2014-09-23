@@ -178,7 +178,6 @@ module Erector
       :field_set_tag,
 
       # FormHelper
-      :form_for,
       :text_field,
       :password_field,
       :hidden_field,
@@ -223,7 +222,7 @@ module Erector
       def_rails_form_helper(method_name)
     end
 
-    [:simple_form_for, :simple_fields_for].each do |method_name|
+    [:simple_form_for].each do |method_name|
       def_rails_form_helper(method_name, "SimpleForm::FormBuilder")
     end
 
