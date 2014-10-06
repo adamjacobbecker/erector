@@ -38,6 +38,9 @@ describe 'Caching' do
 
     def cacheable_widget_with_static_keys
     end
+
+    def cacheable_widget_with_dynamic_keys
+    end
   end
 
   def test_action(action)
@@ -144,6 +147,13 @@ describe 'Caching' do
         with([], skip_digest: true)
 
       test_action(:cacheable_widget_with_skip_digest)
+    end
+
+    it 'can add dynamic keys' do
+      expect_any_instance_of(ActionView::Base).to receive(:cache).
+        with(['the current user'], skip_digest: nil)
+
+      test_action(:cacheable_widget_with_dynamic_keys)
     end
 
     it 'can add static keys' do

@@ -30,10 +30,16 @@ module Erector
 
     def cache_name
       [].tap do |a|
-        a.push(*self.class.cacheable_opts[:static_keys])
+        self.class.cacheable_opts[:static_keys].each do |x|
+          if x.is_a?(Symbol) && respond_to?(x)
+            a << send(x)
+          else
+            a << x
+          end
+        end
 
         self.class.cacheable_opts[:dynamic_keys].each do |x|
-          a.push(instance_variable_get(:"@#{x}"))
+          a << instance_variable_get(:"@#{x}")
         end
       end.reject(&:nil?)
     end
