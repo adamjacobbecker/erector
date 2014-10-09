@@ -2,7 +2,6 @@ module Erector
 end
 
 require "active_support/core_ext/string"
-require "cgi"
 
 require "erector/dependencies"
 require "erector/dependency"

@@ -95,7 +95,7 @@ module Erector
       if content.respond_to?(:html_safe?) && content.html_safe?
         content
       else
-        raw(CGI.escapeHTML(content.to_s))
+        raw(CGI::h(content.to_s))
       end
     end
 
