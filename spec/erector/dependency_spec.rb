@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'benchmark'
-require 'active_support' # for Symbol#to_proc
 
 module DependencySpec
   describe Erector::Dependency do

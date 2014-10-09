@@ -73,10 +73,10 @@ module Erector
         @output.to_s.should == "<foo />"
       end
 
-      it "renders RawStrings for open and close" do
+      it "renders html_safe strings for open and close" do
         promise = Promise.new(@output, "foo")
         promise._render
-        @buffer.each{|s| s.should be_a(RawString)}
+        @buffer.each{|s| s.should be_html_safe}
       end
 
       it "fills its target with attributes" do

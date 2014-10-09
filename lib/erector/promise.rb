@@ -52,12 +52,12 @@ module Erector
 
       @output.newline if !@self_closing and @newliney and !@output.at_line_start?
 
-      @output << RawString.new( "<#{@tag_name}#{Promise.format_attributes(@attributes)}")
+      @output << "<#{@tag_name}#{Promise.format_attributes(@attributes)}".html_safe
       if @self_closing
-        @output << RawString.new( " />")
+        @output << " />".html_safe
         @output.newline if @newliney
       else
-        @output << RawString.new( ">")
+        @output << ">".html_safe
         @output.indent
       end
     end
@@ -76,7 +76,7 @@ module Erector
       return if @self_closing
 
       @output.undent
-      @output<< RawString.new("</#{@tag_name}>")
+      @output << "</#{@tag_name}>".html_safe
       if @newliney
         @output.newline
       end

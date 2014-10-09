@@ -201,12 +201,12 @@ module WidgetSpec
         end.should == '<div><p>Captured Content</p></div>'
       end
 
-      it "returns a RawString" do
+      it "returns an html_safe string" do
         captured = nil
         erector do
           captured = capture_content {}
         end.should == ""
-        captured.should be_a_kind_of(Erector::RawString)
+        captured.should be_html_safe
       end
 
       it "works with nested captures" do

@@ -66,7 +66,7 @@ module Erector
     end
 
     def to_s
-      RawString.new(buffer.kind_of?(String) ? buffer : buffer.join)
+      (buffer.kind_of?(String) ? buffer : buffer.join).html_safe
     end
 
     def to_a
