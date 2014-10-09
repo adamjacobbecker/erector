@@ -1,9 +1,8 @@
 module Erector
 end
 
-require "cgi"
+require "active_support/core_ext/string"
 
-require "erector/raw_string"
 require "erector/dependencies"
 require "erector/dependency"
 require "erector/externals"

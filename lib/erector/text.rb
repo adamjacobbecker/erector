@@ -1,5 +1,3 @@
-require "erector/raw_string"
-
 module Erector
   module Text
     # Emits text to the output buffer, e.g.
@@ -73,7 +71,7 @@ module Erector
 
     # Returns text which will *not* be HTML-escaped.
     def raw(value)
-      RawString.new(value.to_s)
+      value.html_safe if value
     end
 
     # Emits text which will *not* be HTML-escaped. Same effect as text(raw(s))
@@ -97,7 +95,7 @@ module Erector
       if content.respond_to?(:html_safe?) && content.html_safe?
         content
       else
-        raw(CGI.escapeHTML(content.to_s))
+        raw(CGI::escapeHTML(content.to_s))
       end
     end
 

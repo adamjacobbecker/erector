@@ -159,7 +159,7 @@ describe Erector::HTML do
         object = ['a', 'b']
         erector do
           element 'div', object
-        end.should == "<div>#{CGI.escapeHTML object.to_s}</div>"
+        end.should == "<div>#{CGI::escapeHTML object.to_s}</div>"
       end
     end
 
@@ -273,7 +273,7 @@ describe Erector::HTML do
           element 'a' do
             text array
           end
-        end.should == "<a>#{CGI.escapeHTML array.to_s}</a>"
+        end.should == "<a>#{CGI::escapeHTML array.to_s}</a>"
       end
     end
   end

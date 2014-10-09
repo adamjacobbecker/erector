@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'active_support'
-
 module Erector
   describe Erector::Output do
     before do
