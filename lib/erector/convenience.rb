@@ -82,7 +82,6 @@ module Erector
           output << raw(value)
         end
         output << raw("\n// ]]>")
-        output.append_newline # this forces a newline even if we're not in pretty mode
       end
 
       output << raw("\n")

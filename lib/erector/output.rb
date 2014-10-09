@@ -4,11 +4,9 @@ module Erector
   class Output
     SPACES_PER_INDENT = 2
 
-    attr_reader :prettyprint, :widgets, :indentation, :max_length
+    attr_reader :widgets, :max_length
 
     def initialize(options = {})
-      @prettyprint = options.fetch(:prettyprint, AbstractWidget.prettyprint_default)
-      @indentation = options.fetch(:indentation, 0)
       @current_line_length = 0
       @max_length = options[:max_length]
       @widgets = []
@@ -29,18 +27,14 @@ module Erector
 
     def <<(s)
       s = s.to_s
-      append_indentation
       if @max_length && s.length + @current_line_length > @max_length
         leading_spaces = s =~ /^( +)/ ? $1.size : 0
         trailing_spaces = s =~ /( +)$/ ? $1.size : 0
 
-        append(" " * leading_spaces)
         need_space = false
         words = s.split(/ /)
         words.each do |word|
           if (need_space ? 1 : 0) + word.length > space_left
-            append_newline
-            append_indentation
             need_space = false
           end
           append(" ") if need_space
@@ -73,12 +67,6 @@ module Erector
       buffer.kind_of?(Array) ? buffer : [buffer]
     end
 
-    def newline
-      if prettyprint
-        append_newline
-      end
-    end
-
     def at_line_start?
       @current_line_length == 0
     end
@@ -89,13 +77,6 @@ module Erector
 
     def undent
       @indentation -= 1 if prettyprint
-    end
-
-    # always append a newline, regardless of prettyprint setting
-    #todo: test
-    def append_newline
-      buffer << "\n"
-      @current_line_length = 0
     end
 
     def mark

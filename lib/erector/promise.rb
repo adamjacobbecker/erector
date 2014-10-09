@@ -50,15 +50,11 @@ module Erector
 
     def _render_open_tag
 
-      @output.newline if !@self_closing and @newliney and !@output.at_line_start?
-
       @output << RawString.new( "<#{@tag_name}#{Promise.format_attributes(@attributes)}")
       if @self_closing
         @output << RawString.new( " />")
-        @output.newline if @newliney
       else
         @output << RawString.new( ">")
-        @output.indent
       end
     end
 
@@ -75,11 +71,7 @@ module Erector
     def _render_close_tag
       return if @self_closing
 
-      @output.undent
       @output<< RawString.new("</#{@tag_name}>")
-      if @newliney
-        @output.newline
-      end
     end
 
     def method_missing(method_name, *args, &block)
