@@ -9,8 +9,8 @@ cd $(dirname "$0")/..
 
 # Build a new gem archive.
 
-rm -rf erecotr-rails4-*.gem
-gem build -q erecotr-rails4.gemspec
+rm -rf erector-rails4-*.gem
+gem build -q erector-rails4.gemspec
 
 # Make sure we're on the master branch.
 
@@ -21,7 +21,7 @@ gem build -q erecotr-rails4.gemspec
 
 # Figure out what version we're releasing.
 
-tag=v`ls erecotr-rails4-*.gem | sed 's/^erecotr-rails4-\(.*\)\.gem$/\1/'`
+tag=v`ls erector-rails4-*.gem | sed 's/^erector-rails4-\(.*\)\.gem$/\1/'`
 
 # Make sure we haven't released this version before.
 
@@ -34,5 +34,5 @@ git fetch -t origin
 
 # Tag it and bag it.
 
-gem push erecotr-rails4-*.gem && git tag "$tag" &&
+gem push erector-rails4-*.gem && git tag "$tag" &&
   git push origin master && git push origin "$tag"
