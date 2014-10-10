@@ -106,6 +106,21 @@ describe Erector::Needs do
     }.should_not raise_error
   end
 
+  it "allows nil to be overridden by subclasses" do
+    class Thing10 < Erector::Widget
+      needs :title,
+            id: nil,
+            html_opts: {}
+    end
+    class Thing11 < Thing10
+      needs id: 'newProjectModal', title: 'asdf'
+    end
+    lambda {
+      thing = Thing11.new
+      thing.instance_variable_get(:@id).should eq 'newProjectModal'
+    }.should_not raise_error
+  end
+
   it "doesn't attempt to dup undupable value if there's another need passed in (bug)" do
     class Section < Erector::Widget
       needs :title, :href => nil, :stinky => false, :awesome => true, :answer => 42, :shoe_size => 12.5, :event_type => :jump

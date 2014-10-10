@@ -68,7 +68,7 @@ module Erector
 
       def needed_defaults
         @needed_defaults ||= get_needs.inject({}) do |defaults, need|
-          defaults = need.merge(defaults) if need.is_a? Hash
+          defaults = defaults.merge(need) if need.is_a? Hash
           defaults
         end
       end
