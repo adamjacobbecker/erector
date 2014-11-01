@@ -10,11 +10,11 @@ module Erector
 
         @cacheable_opts = {
           static_keys: args,
-          dynamic_keys: if options[:needs_keys]
+          dynamic_keys: (if options[:needs_keys]
             needed_variables & options[:needs_keys]
           else
             needed_variables
-          end,
+          end),
           skip_digest: options[:skip_digest]
         }
       end
