@@ -1,6 +1,10 @@
 module Erector
   module Rails
     class FormBuilder
+      PROXY_MISSING_METHODS = {
+        :simple_fields_for => :fields_for
+      }
+
       class_attribute :parent_builder_class
       self.parent_builder_class = ActionView::Base.default_form_builder
 
@@ -19,6 +23,8 @@ module Erector
       end
 
       def method_missing(method_name, *args, &block)
+        method_name = PROXY_MISSING_METHODS[method_name] || method_name
+
         if parent.respond_to?(method_name)
           return_value = parent.send(method_name, *args, &block)
           if return_value.is_a?(String)
@@ -27,14 +33,6 @@ module Erector
           else
             return_value
           end
-        else
-          super
-        end
-      end
-
-      def self.method_missing(method_name, *args, &block)
-        if parent_builder_class.respond_to?(method_name)
-          parent_builder_class.send(method_name, *args, &block)
         else
           super
         end

@@ -243,6 +243,16 @@ describe Erector::Rails do
       end.should == %{<form accept-charset="UTF-8" action="/test" method="post"><div style="#{@hidden_input_styles}"><input name="utf8" type="hidden" value="&#x2713;" /></div><label for="something_my_input">My input</label></form>}
     end
 
+    it "#fields_for" do
+      test_render do
+        form_for(:something, :url => "/test") do |form|
+          form.fields_for(:foo) do |fields|
+            fields.label(:my_input, "My input")
+          end
+        end
+      end.should =~ /something_foo_my_input/
+    end
+
     it "can be called from a nested widget" do
       test_render do
         widget Erector.inline { form_for(:something, :url => "/test") { |form| form.text_field :my_input } }
@@ -264,13 +274,68 @@ describe Erector::Rails do
     end
   end
 
-  describe "#simple_form_for" do
-    it "instantiates a SimpleForm builder" do
-      test_render do
-        simple_form_for(:something, :url => "/test") do |form|
-          form.input :foobar
+  describe 'Simple Form' do
+    describe "#simple_form_for" do
+      it "instantiates a SimpleForm builder" do
+        test_render do
+          simple_form_for(:something, :url => "/test") do |form|
+            form.input :meebar
+            form.input :foobar
+          end
+        end.should =~ /meebar/
+      end
+
+    end
+
+    # We're testing GM, so only test on newest Rails...
+    if Gem::Version.new(::Rails.version) >= Gem::Version.new('4.1.0')
+      require 'ostruct'
+
+      describe "#simple_fields_for" do
+        class SimpleFormObject < OpenStruct
+          def self.model_name
+            OpenStruct.new(param_key:'simple_form_object')
+          end
+
+          def to_key
+            ['1']
+          end
         end
-      end.should =~ /foobar/
+
+        it "functions properly" do
+          rendered = test_render do
+            simple_form_for(:foo, :url => "/test") do |form|
+              form.input :not_fields
+
+              form.simple_fields_for :bar, defaults: { input_html: { style: 'border-color: red;' } } do |fields|
+                fields.input :biz
+
+                [:booz, :baz].each do |x|
+                  fields.input x, hint: 'this a hint'
+                end
+
+                fields.input :fluz
+              end
+
+              div.form_actions {
+                form.input :last_field
+              }
+            end
+          end
+          rendered.should == %Q{<form accept-charset="UTF-8" action="/test" class="simple_form foo" method="post"><div style="#{@hidden_input_styles}"><input name="utf8" type="hidden" value="&#x2713;" /></div><div class="input string required foo_not_fields"><label class="string required" for="foo_not_fields"><abbr title="required">*</abbr> Not fields</label><input aria-required="true" class="string required" id="foo_not_fields" name="foo[not_fields]" required="required" type="text" /></div><div class="input string required foo_bar_biz"><label class="string required" for="foo_bar_biz"><abbr title="required">*</abbr> Biz</label><input aria-required="true" class="string required" id="foo_bar_biz" name="foo[bar][biz]" required="required" style="border-color: red;" type="text" /></div><div class="input string required foo_bar_booz field_with_hint"><label class="string required" for="foo_bar_booz"><abbr title="required">*</abbr> Booz</label><input aria-required="true" class="string required" id="foo_bar_booz" name="foo[bar][booz]" required="required" style="border-color: red;" type="text" /><span class="hint">this a hint</span></div><div class="input string required foo_bar_baz field_with_hint"><label class="string required" for="foo_bar_baz"><abbr title="required">*</abbr> Baz</label><input aria-required="true" class="string required" id="foo_bar_baz" name="foo[bar][baz]" required="required" style="border-color: red;" type="text" /><span class="hint">this a hint</span></div><div class="input string required foo_bar_fluz"><label class="string required" for="foo_bar_fluz"><abbr title="required">*</abbr> Fluz</label><input aria-required="true" class="string required" id="foo_bar_fluz" name="foo[bar][fluz]" required="required" style="border-color: red;" type="text" /></div><div class="form_actions"><div class="input string required foo_last_field"><label class="string required" for="foo_last_field"><abbr title="required">*</abbr> Last field</label><input aria-required="true" class="string required" id="foo_last_field" name="foo[last_field]" required="required" type="text" /></div></div></form>}
+        end
+
+        it 'works with objects' do
+          rendered= test_render do
+            simple_form_for(SimpleFormObject.new, :url => "/test") do |form|
+              form.simple_fields_for :subs do |fields|
+                fields.input :hi
+              end
+            end
+          end
+          rendered.should == %Q{<form accept-charset="UTF-8" action="/test" class="simple_form new_simple_form_object" id="new_simple_form_object_1" method="post"><div style="#{@hidden_input_styles}"><input name="utf8" type="hidden" value="&#x2713;" /></div><div class="input string required simple_form_object_subs_hi"><label class="string required" for="simple_form_object_subs_hi"><abbr title="required">*</abbr> Hi</label><input aria-required="true" class="string required" id="simple_form_object_subs_hi" name="simple_form_object[subs][hi]" required="required" type="text" /></div></form>}
+        end
+      end
     end
   end
 
